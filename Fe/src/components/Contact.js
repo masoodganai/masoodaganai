@@ -27,7 +27,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://masoodaganai-26cd.vercel.app/send-email", formData);
+      const response = await axios.post("https://masoodaganai-3ggt.vercel.app/send-email", formData);
       setStatus("Your message was sent successfully!");
       setFormData({ name: "", email: "", phoneNumber:"", subject:"",message: "" }); // Clear form after submission
     } catch (error) {
