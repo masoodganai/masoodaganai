@@ -2,16 +2,23 @@ const express = require("express");
 const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 require("dotenv").config();
-const cors = require("cors");  // Import the cors package
+const cors = require("cors");
 
 const app = express();
 
+// Validate environment variables
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  console.error("Error: EMAIL_USER or EMAIL_PASS environment variables are not set!");
+  process.exit(1);
+}
+
 // Use CORS middleware to allow cross-origin requests
 app.use(cors({
-  origin: "https://masoodaganai.vercel.app/contact", // Allow requests only from your frontend (React app)
+  origin: "https://masoodaganai.vercel.app", // Correct domain for frontend
   methods: "GET,POST", // Allow only GET and POST methods
   credentials: true, // Allow cookies if needed
 }));
+
 // Middleware to parse the body of requests
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,10 +43,10 @@ app.post("/send-email", async (req, res) => {
 
   // Email options
   const mailOptions = {
-    from: email, // Sender's email
+    from: `"${name}" <${email}>`, // Sender's email and name
     to: "developermasoodganai@gmail.com", // Your email where the message will be sent
     subject: `Contact Form Submission from ${name}`,
-    text: `Message from ${name} (${email})\n\nPhone Number: ${phoneNumber}\n\nSubject: ${subject}\n\nMessage:\n${message}`, // The email content
+    text: `Message from ${name} (${email})\n\nPhone Number: ${phoneNumber}\n\nSubject: ${subject}\n\nMessage:\n${message}`,
   };
 
   // Send the email
@@ -47,16 +54,13 @@ app.post("/send-email", async (req, res) => {
     await transporter.sendMail(mailOptions);
     return res.status(200).json({ message: "Email sent successfully!" });
   } catch (error) {
-    console.error("Error sending email: ", error);
-    return res.status(500).json({ error: "Failed to send email" });
+    console.error(`Error sending email: ${error.message}`, { stack: error.stack });
+    return res.status(500).json({
+      error: "Failed to send email. Please try again later.",
+      details: process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 });
 
-// Start the server
-const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
+// Export the app for deployment
 module.exports = app;
-
