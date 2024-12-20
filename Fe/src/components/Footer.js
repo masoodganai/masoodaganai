@@ -91,7 +91,7 @@ const Footer = () => {
         </div>
         <div>
           <p style={copyrightStyle}>
-            &copy; <a href="#" style={{ color: "#ECF0F1", textDecoration: "none" }}>masoodaganai</a>, All Right Reserved || Designed By{" "}
+            &copy; <a href="#" style={{ color: "#ECF0F1", textDecoration: "none" }}>masoodaganai</a>. All Right Reserved || Designed By{" "}
             <a href="" target="_blank" rel="noopener noreferrer" style={{ color: "#E74C3C", textDecoration: "none" }}>
               Masood Ganai
             </a>
