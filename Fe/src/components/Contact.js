@@ -31,7 +31,7 @@ const Contact = () => {
       setStatus("Your message was sent successfully!");
       setFormData({ name: "", email: "", phoneNumber:"", subject:"",message: "" }); // Clear form after submission
     } catch (error) {
-      setStatus("There was an error sending your message.");
+      setStatus("There was an error sending your message please contact through instagram linkedin links are present in footer.");
     }
   };
 
