@@ -8,7 +8,7 @@ const app = express();
 
 // Use CORS middleware to allow cross-origin requests
 app.use(cors({
-  origin: "https://masoodaganai.vercel.app/contact", // Allow requests only from your frontend (React app)
+  origin: "https://masoodaganai.vercel.app", // Allow requests only from your frontend (React app)
   methods: "GET,POST", // Allow only GET and POST methods
   credentials: true, // Allow cookies if needed
 }));
