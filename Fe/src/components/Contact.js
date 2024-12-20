@@ -1,51 +1,62 @@
 import React, { useState } from "react";
 import axios from "axios";
-import img5 from "../img/img5.jpg"
+import img5 from "../img/img5.jpg";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phoneNumber:"",
+    phoneNumber: "",
     subject: "",
     message: "",
   });
 
   const [formStatus, setStatus] = useState("");
+  const [isHovered, setIsHovered] = useState(false);
 
-  // Handle input changes
   const handleChange = (e) => {
-    const { id, value } = e.target; 
+    const { id, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
       [id]: value,
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const { name, email, phoneNumber, subject, message } = formData;
+    if (!name || !email || !phoneNumber || !subject || !message) {
+      setStatus("Please fill out all fields.");
+      return;
+    }
+
     try {
-      const response = await axios.post("https://masoodaganai-26cd.vercel.app/send-email", formData);
+      const response = await axios.post(
+        "https://masoodaganai-26cd.vercel.app/send-email",
+        formData
+      );
       setStatus("Your message was sent successfully!");
-      setFormData({ name: "", email: "", phoneNumber:"", subject:"",message: "" }); // Clear form after submission
+      setFormData({ name: "", email: "", phoneNumber: "", subject: "", message: "" });
     } catch (error) {
-      setStatus("There was an error sending your message please contact through instagram linkedin links are present in footer.");
+      if (error.response && error.response.data && error.response.data.error) {
+        setStatus(error.response.data.error);
+      } else {
+        setStatus("An unexpected error occurred. Please try again later.");
+      }
     }
   };
 
-  // Inline styles
   const sectionStyle = {
-    backgroundImage: {img5}, // Replace with your background image URL
+    backgroundImage: `url(${img5})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     padding: "60px 20px",
-    color: "#fff", // White text for contrast
-  }; 
+    color: "#fff",
+  };
 
   const formContainerStyle = {
-    backgroundColor: "rgba(0, 0, 0, 0.7)", // Dark transparent background
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     padding: "30px",
     borderRadius: "10px",
     boxShadow: "0 6px 12px rgba(0, 0, 0, 0.2)",
@@ -60,7 +71,7 @@ const Contact = () => {
   };
 
   const buttonStyle = {
-    backgroundColor: "#3498db", // Primary button color
+    backgroundColor: isHovered ? "#2980b9" : "#3498db",
     color: "#fff",
     border: "none",
     padding: "10px 20px",
@@ -72,12 +83,15 @@ const Contact = () => {
     transition: "background 0.3s",
   };
 
-  const buttonHoverStyle = {
-    backgroundColor: "#2980b9", // Darker shade on hover
+  const successMessageStyle = {
+    color: "#2ecc71",
+    textAlign: "center",
+    marginBottom: "15px",
+    fontWeight: "600",
   };
 
-  const successMessageStyle = {
-    color: "#2ecc71", // Success green
+  const errorMessageStyle = {
+    color: "#e74c3c",
     textAlign: "center",
     marginBottom: "15px",
     fontWeight: "600",
@@ -89,83 +103,60 @@ const Contact = () => {
         <div className="row justify-content-center">
           <div className="col-lg-6">
             <div style={formContainerStyle}>
-              {formStatus && <div style={successMessageStyle}>{formStatus}</div>}
-              <form
-                name="sentMessage"
-                id="contactForm"
-                noValidate="novalidate"
-                onSubmit={handleSubmit}
-              >
-                <div className="control-group">
-                  <input
-                    type="text"
-                    style={inputStyle}
-                    id="name"
-                    placeholder="Your Name"
-                    required="required"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
+              {formStatus && (
+                <div style={formStatus.startsWith("Your message") ? successMessageStyle : errorMessageStyle}>
+                  {formStatus}
                 </div>
-                <div className="control-group">
-                  <input
-                    type="email"
-                    style={inputStyle}
-                    id="email"
-                    placeholder="Your Email"
-                    required="required"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="control-group">
-                  <input
-                    type="phoneNumber"
-                    style={inputStyle}
-                    id="phoneNumber"
-                    placeholder="Phone Number"
-                    required="required"
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="control-group">
-                  <input
-                    type="text"
-                    style={inputStyle}
-                    id="subject"
-                    placeholder="Subject"
-                    required="required"
-                    value={formData.subject}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="control-group">
-                  <textarea
-                    style={{
-                      ...inputStyle,
-                      height: "100px",
-                      resize: "none",
-                    }}
-                    id="message"
-                    placeholder="Message"
-                    required="required"
-                    value={formData.message}
-                    onChange={handleChange}
-                  ></textarea>
-                </div>
-                <div>
-                  <button
-                    className="btn"
-                    type="submit"
-                    id="sendMessageButton"
-                    style={buttonStyle}
-                    onMouseEnter={(e) => (e.target.style.backgroundColor = buttonHoverStyle.backgroundColor)}
-                    onMouseLeave={(e) => (e.target.style.backgroundColor = buttonStyle.backgroundColor)}
-                  >
-                    Send Message
-                  </button>
-                </div>
+              )}
+              <form id="contactForm" noValidate="novalidate" onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  style={inputStyle}
+                  id="name"
+                  placeholder="Your Name"
+                  value={formData.name}
+                  onChange={handleChange}
+                />
+                <input
+                  type="email"
+                  style={inputStyle}
+                  id="email"
+                  placeholder="Your Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                />
+                <input
+                  type="tel"
+                  style={inputStyle}
+                  id="phoneNumber"
+                  placeholder="Phone Number"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                />
+                <input
+                  type="text"
+                  style={inputStyle}
+                  id="subject"
+                  placeholder="Subject"
+                  value={formData.subject}
+                  onChange={handleChange}
+                />
+                <textarea
+                  style={{ ...inputStyle, height: "100px", resize: "none" }}
+                  id="message"
+                  placeholder="Message"
+                  value={formData.message}
+                  onChange={handleChange}
+                />
+                <button
+                  type="submit"
+                  id="sendMessageButton"
+                  style={buttonStyle}
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                >
+                  Send Message
+                </button>
               </form>
             </div>
           </div>
@@ -176,3 +167,4 @@ const Contact = () => {
 };
 
 export default Contact;
+
