@@ -27,7 +27,7 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:5001/send-email", formData);
+      const response = await axios.post("https://masoodaganai.onrender.com", formData);
       setStatus("Your message was sent successfully!");
       setFormData({ name: "", email: "", phoneNumber:"", subject:"",message: "" }); // Clear form after submission
     } catch (error) {
