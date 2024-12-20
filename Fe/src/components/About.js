@@ -72,7 +72,7 @@ const About = () => {
           <div className="col-lg-12">
             <div className="about-content">
               <div className="section-header text-left">
-                <p style={paragraphStyle}>Learn About Me</p>
+                <p style={paragraphStyle}>--Learn About Me --</p>
                 <section id="professional-summary" className="section">
                   <h2 style={headingStyle}>About Me</h2>
                   <h1 style={paragraphStyle}>
